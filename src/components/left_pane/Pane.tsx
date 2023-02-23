@@ -7,13 +7,13 @@ import { toast } from "react-toastify";
 import { ICustomErrType } from "../../util/config";
 import {
   getProjectApi,
-  ProjectModel,
-  setProject,
+  getProjectDetailApi
 } from "../../redux/reducers/projectReducer";
 import {
   getTaskStatusApi,
   getPriorityApi,
   getTaskTypeApi,
+  
 } from "../../redux/reducers/taskReducer";
 import { NavLink, useNavigate } from "react-router-dom";
 import { Select, Space } from "antd";
@@ -87,9 +87,9 @@ const Pane = (props: Props) => {
       }
     }
   };
-  const handleSetProject = (record: ProjectModel) => {
-    dispatch(setProject(record));
-  };
+  // const handleSetProject = (record: ProjectModel) => {
+  //   dispatch(setProject(record));
+  // };
   useEffect(() => {
     getProjects();
     getStatus();
@@ -107,7 +107,7 @@ const Pane = (props: Props) => {
       originalEstimate: 0,
       timeTrackingSpent: 0,
       timeTrackingRemaining: 0,
-      projectId: arrProject.length ? arrProject[0].id.toString() : "",
+      projectId: "",
       typeId: arrTaskType.length ? arrTaskType[0].id.toString() : '',
       priorityId: arrPriority.length ? arrPriority[0].priorityId.toString() : ''
     },
@@ -160,9 +160,9 @@ const Pane = (props: Props) => {
     frmTask.setFieldValue('listUserAsign', value);
   };
 
-  const onProjectChange = (event) => {
-    const projId = event.target.value
-    frmTask.setFieldValue("projectId", projId);
+  const clearForm = (event: any) => {
+    event.preventDefault();
+    frmTask.resetForm();
   }
 
   useEffect(() => {
@@ -202,15 +202,6 @@ const Pane = (props: Props) => {
               >
                 <i className="fa-solid fa-plus" /> Create task
               </a>
-              <div className="search">
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Search task"
-                  name="search"
-                />
-                <button className="btn-2 btn">Search</button>
-              </div>
             </div>
           </li>
         </ul>
@@ -230,27 +221,16 @@ const Pane = (props: Props) => {
               type="button"
               className="btn-close"
               data-bs-dismiss="offcanvas"
-              onClick={() => getProjects()}
+              onClick={(event) => {
+                dispatch(getProjectDetailApi(project?.id!))
+                clearForm(event);
+              }}
             ></button>
           </div>
           <div className="offcanvas-content">
-            <form onSubmit={frmTask.handleSubmit}>
+            <form id="create_task" onSubmit={frmTask.handleSubmit}>
               <div className="mb-4">
                 <label className="form-label">Project Name</label>
-                {/* <select
-                  className="form-select"
-                  name="projectId"
-                  value={frmTask.values.projectId}
-                  onChange={onProjectChange}
-                >
-                  {arrProject.map((proj, idx) => {
-                    return (
-                      <option value={proj.id} key={idx} onClick={() => handleSetProject(proj)}>
-                        {proj.projectName}
-                      </option>
-                    );
-                  })}
-                </select> */}
                 <Select
                   showSearch
                   className="form-select"
@@ -258,6 +238,7 @@ const Pane = (props: Props) => {
                   optionFilterProp=""
                   onChange={(value) => { frmTask.setFieldValue('projectId', value) }}
                   // onSearch={() => {})}
+                  value={frmTask.values.projectId}
                   filterOption={(input, option) =>
                     (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
                   }
@@ -411,9 +392,16 @@ const Pane = (props: Props) => {
                 />
               </div>
               <div className="d-flex justify-content-end taskbot">
-                <button type="submit" className="btn btn-1">
+                <button type="submit" className="btn btn-1 mx-2">
                   Create
                 </button>
+
+                <button className="btn btn-1" onClick={(e) => {
+                  
+                  clearForm(e)
+                  }}>
+                  Reset
+                </button >
               </div>
             </form>
           </div>

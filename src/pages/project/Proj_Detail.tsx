@@ -163,30 +163,6 @@ const Proj_Detail = (props: Props) => {
     boxeditor.classList.remove("active");
   };
 
-  const showcmt2 = (e, comment) => {
-    e.target
-      .closest(".boxright")
-      .querySelector(".boxbtn")
-      .classList.add("active");
-    e.target
-      .closest(".boxright")
-      .querySelector(".boxupdate")
-      .classList.add("active");
-
-    setEditComment(comment);
-  };
-  const closecmt2 = (e) => {
-    e.target
-      .closest(".boxright")
-      .querySelector(".boxbtn")
-      .classList.remove("active");
-    e.target
-      .closest(".boxright")
-      .querySelector(".boxupdate")
-      .classList.remove("active");
-
-  };
-
   const getTaskStatusById = (id: string) => {
     const result = projectDetail?.lstTask.find(
       (status) => status.statusId === id
@@ -320,10 +296,6 @@ const Proj_Detail = (props: Props) => {
   const handleRefreshProj = () => {
     dispatch(getProjectDetailApi(projectDetail?.id!));
   };
-
-  function createMarkup(string) {
-    return { __html: string };
-  }
 
   return (
     <div className="content-right">
@@ -667,7 +639,7 @@ const Proj_Detail = (props: Props) => {
                   <div className="col-md-6">
                     <div className="modal-icon d-flex align-items-center ms-auto mb-4">
                       <h3 className="modal-name">Editable Task Info</h3>
-                      <button className="btn ms-auto" type="submit">
+                      <button className="btn ms-auto mx-4" type="submit">
                         <i className="fa-regular fa-pen-to-square"></i>
                         <div className="btnoverlay">Update task</div>
                       </button>
